@@ -3,6 +3,17 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@theme{
+  --color-Primary: #B6F500;
+  --color-Secondary: #A4DD00;
+  --color-Accent: #98CD00;
+  --color-Background: #FFFADC;
+  --color-Neutral: #FFFFFF;
+  --color-Neutral1: #F9F9F9;
+  --color-Neutral2: #000000;
+  --color-Neutral3: #808080;
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

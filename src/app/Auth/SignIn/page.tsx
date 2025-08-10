@@ -1,12 +1,10 @@
 import React from 'react';
-import SignInPage from "@/components/mvpblocks/login-form-3";
+import SignInPage2 from "@/components/mvpblocks/Sign-form-3";
 
-function SignIn() {
+function Page() {
     return (
-        <>
-            <SignInPage/>
-        </>
+        <SignInPage2/>
     );
 }
 
-export default SignIn;
+export default Page;

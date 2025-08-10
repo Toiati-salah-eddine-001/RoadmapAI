@@ -14,7 +14,8 @@ import {
   Github,
 } from 'lucide-react';
 
-export default function SignInPage() {
+export default function SignInPage2() {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -132,11 +133,34 @@ export default function SignInPage() {
                     Welcome back
                   </h2>
                   <p className="mt-2 text-sm text-stone-600">
-                    Sign in to continue your creative journey
+                    Sign up to continue your creative journey
                   </p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
+                  <div>
+                    <label
+                      htmlFor="name"
+                      className="mb-2 block text-sm font-medium uppercase"
+                    >
+                      Name
+                    </label>
+                    <div className="relative">
+                      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                        {/* You can use a user icon here if desired */}
+                      </div>
+                      <input
+                        id="name"
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                        className="border-border bg-input block w-full rounded-lg border py-3 pr-3 pl-10 text-sm"
+                        placeholder="Enter your name"
+                      />
+                    </div>
+                  </div>
+
                   <div>
                     <label
                       htmlFor="email"
@@ -218,10 +242,10 @@ export default function SignInPage() {
                     {loading ? (
                       <>
                         <Loader2 className="h-5 w-5 animate-spin" />
-                        <span className="ml-2">Signing in...</span>
+                        <span className="ml-2">Signing up...</span>
                       </>
                     ) : (
-                      'Sign in to your account'
+                      'Sign up to your account'
                     )}
                   </button>
 
@@ -257,7 +281,7 @@ export default function SignInPage() {
                 <div className="text-muted-foreground mt-8 text-center text-sm">
                   Don&apos;t have an account?{' '}
                   <a href="#" className="text-primary hover:text-primary/80">
-                    Sign up for free
+                    Sign in
                   </a>
                 </div>
               </div>
