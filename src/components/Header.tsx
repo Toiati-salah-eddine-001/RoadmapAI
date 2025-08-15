@@ -27,12 +27,16 @@ function Header() {
                     <Link href="#pricing" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
                         Pricing
                     </Link>
+                    <Link href="/Auth/Login">
                     <Button variant="outline" size="sm" className="border-gray-200 bg-transparent">
                         Sign In
                     </Button>
-                    <Button size="sm" className="bg-[#B6F500] hover:bg-[#A4DD00] text-black font-medium">
-                        Get Started
-                    </Button>
+                    </Link>
+                    <Link href="/Auth/SignUp">
+                        <Button size="sm" className="bg-[#B6F500] hover:bg-[#A4DD00] text-black font-medium">
+                            Get Started
+                        </Button>
+                    </Link>
                 </nav>
 
                 <Button variant="ghost" size="sm" className="md:hidden">

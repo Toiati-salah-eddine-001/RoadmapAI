@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
+import { Calendar, Home, Inbox, Search, Settings, History, Map } from "lucide-react"
 
 import {
     Sidebar,
@@ -15,18 +15,18 @@ import {
 const items = [
     {
         title: "Home",
-        url: "#",
+        url: "/Dashboard/PromptPage",
         icon: Home,
     },
     {
-        title: "Inbox",
-        url: "#",
-        icon: Inbox,
+        title: "My Roadmaps",
+        url: "/Dashboard/hestoryPage",
+        icon: History,
     },
     {
-        title: "Calendar",
-        url: "#",
-        icon: Calendar,
+        title: "Browse Roadmaps",
+        url: "/Dashboard/PromptPage#roadmaps",
+        icon: Map,
     },
     {
         title: "Search",
@@ -39,7 +39,7 @@ const items = [
         icon: Settings,
     },
 ]
-const SIDEBAR_KEYBOARD_SHORTCUT = "b"
+
 export function AppSidebar() {
     return (
         <Sidebar>

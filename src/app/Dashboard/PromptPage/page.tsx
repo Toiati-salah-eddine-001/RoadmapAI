@@ -1,3 +1,4 @@
+"use client";
 import React from 'react';
 import VercelV0Chat from "@/components/mvpblocks/v0-chat";
 import {roadmapCards} from "@/Data_Fake/DataRoadMap"
@@ -42,7 +43,7 @@ function Page() {
                     
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full">
                         {roadmapCards.map((card, index) => (
-                            <Card key={index} {...card} />
+                            <Card key={index} title={card.title} description={card.description} buttonLink={card.buttonLink} buttonText={card.buttonText} image={card.image} color={card.color} />
                         ))}
                     </div>
                 </div>

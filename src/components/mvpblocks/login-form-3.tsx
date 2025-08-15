@@ -13,6 +13,7 @@ import {
   CheckCircle,
   Github,
 } from 'lucide-react';
+import Link from "next/link";
 
 export default function SignInPage() {
   const [email, setEmail] = useState('');
@@ -256,9 +257,9 @@ export default function SignInPage() {
 
                 <div className="text-muted-foreground mt-8 text-center text-sm">
                   Don&apos;t have an account?{' '}
-                  <a href="#" className="text-primary hover:text-primary/80">
+                  <Link href="/Auth/SignUp" className="text-primary hover:text-primary/80">
                     Sign up for free
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
