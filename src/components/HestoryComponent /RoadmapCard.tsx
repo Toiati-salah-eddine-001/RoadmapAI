@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { Eye, Trash2, Calendar, Clock, Play, CheckCircle2, Edit3 } from 'lucide-react';
+import { Eye, Trash2, Calendar, Clock, Play, CheckCircle2, Edit3, Copy } from 'lucide-react';
 import { Roadmap } from '@/shared/types';
 
 interface RoadmapCardProps {
@@ -22,6 +22,21 @@ const statusConfig = {
         glow: 'shadow-accent/30'
     },
     'Completed': {
+        color: 'bg-gradient-primary text-neutral-2',
+        icon: CheckCircle2,
+        glow: 'shadow-primary/30'
+    },
+    'draft': {
+        color: 'bg-gradient-to-r from-neutral-3 to-muted text-neutral-2',
+        icon: Edit3,
+        glow: 'shadow-neutral-3/20'
+    },
+    'in progress': {
+        color: 'bg-gradient-accent text-neutral-2',
+        icon: Play,
+        glow: 'shadow-accent/30'
+    },
+    'completed': {
         color: 'bg-gradient-primary text-neutral-2',
         icon: CheckCircle2,
         glow: 'shadow-primary/30'
@@ -67,7 +82,7 @@ const domainConfig = {
     },
 };
 
-export default function RoadmapCard({ roadmap, onDelete }: RoadmapCardProps) {
+export default function RoadmapCard({ roadmap, onDelete, onDuplicate }: RoadmapCardProps) {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     const formatDate = (dateString: string) => {
@@ -83,12 +98,19 @@ export default function RoadmapCard({ roadmap, onDelete }: RoadmapCardProps) {
     };
 
     const getStatusConfig = (status: string) => {
-        return statusConfig[status as keyof typeof statusConfig] || statusConfig.Draft;
+        const normalizedStatus = status?.toLowerCase() || 'draft';
+        return statusConfig[normalizedStatus as keyof typeof statusConfig] || statusConfig.Draft;
     };
 
     const handleDelete = () => {
         onDelete(roadmap.id);
         setShowDeleteConfirm(false);
+    };
+
+    const handleDuplicate = () => {
+        if (onDuplicate) {
+            onDuplicate(roadmap.id);
+        }
     };
 
     const domainStyle = getDomainConfig(roadmap.domain);
@@ -144,7 +166,7 @@ export default function RoadmapCard({ roadmap, onDelete }: RoadmapCardProps) {
                         >
                             <StatusIcon className="w-3.5 h-3.5" />
                             <span className="text-xs font-bold tracking-wide">
-                                {roadmap.status.toUpperCase()}
+                                {(roadmap.status || 'Draft').toUpperCase()}
                             </span>
                         </div>
                     </div>
@@ -164,6 +186,30 @@ export default function RoadmapCard({ roadmap, onDelete }: RoadmapCardProps) {
                     >
                         {roadmap.description || 'Embark on a structured learning journey tailored to your goals.'}
                     </p>
+
+                    {/* Progress Bar */}
+                    {roadmap.progress !== undefined && (
+                        <div className="mb-6">
+                            <div className="flex items-center justify-between text-sm mb-2" style={{ color: 'var(--color-Neutral3)' }}>
+                                <span className="font-medium">Progress</span>
+                                <span className="font-bold" style={{ color: 'var(--color-Primary)' }}>
+                                    {roadmap.progress}%
+                                </span>
+                            </div>
+                            <div 
+                                className="w-full h-2 rounded-full overflow-hidden"
+                                style={{ backgroundColor: 'var(--color-Neutral1)' }}
+                            >
+                                <div 
+                                    className="h-full rounded-full transition-all duration-500"
+                                    style={{
+                                        width: `${roadmap.progress}%`,
+                                        background: 'linear-gradient(90deg, var(--color-Primary), var(--color-Secondary))',
+                                    }}
+                                ></div>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Meta Information */}
                     <div className="flex items-center gap-6 text-sm mb-8" style={{ color: 'var(--color-Neutral3)' }}>
@@ -192,6 +238,21 @@ export default function RoadmapCard({ roadmap, onDelete }: RoadmapCardProps) {
                             <Eye className="w-4 h-4" />
                             <span>Explore</span>
                         </button>
+
+                        {onDuplicate && (
+                            <button
+                                onClick={handleDuplicate}
+                                className="flex items-center justify-center p-3 rounded-xl font-medium transition-all duration-300 border"
+                                style={{
+                                    backgroundColor: 'rgba(182, 245, 0, 0.1)',
+                                    color: 'var(--color-Primary)',
+                                    borderColor: 'rgba(182, 245, 0, 0.3)',
+                                }}
+                                title="Duplicate Roadmap"
+                            >
+                                <Copy className="w-4 h-4" />
+                            </button>
+                        )}
 
                         <button
                             onClick={() => setShowDeleteConfirm(true)}
