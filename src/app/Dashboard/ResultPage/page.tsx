@@ -125,15 +125,58 @@ const sampleRoadmap: RoadmapData = {
 export default function Home() {
     const [roadmapData, setRoadmapData] = useState<RoadmapData | null>(null);
     const [loading, setLoading] = useState(true);
+    // frontend function: fetch roadmaps of a specific user
+    async function getUserRoadmapsAPI(userId: string) {
+        try {
+            const response = await fetch("http://127.0.0.1:5000/getuser", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ user_id: userId }), // send user_id
+            });
+
+            const {data} = await response.json();
+
+            if (!response.ok || !data) {
+                console.error("Error fetching user roadmaps:", data.message || "Unknown error");
+                return null;
+            }
+
+            return data; // list of roadmaps
+        } catch (err) {
+            console.error("Fetch error:", err);
+            return null;
+        }
+    }
+
+// get profile from localStorage
+    let profile = null;
+    if (typeof window !== 'undefined') {
+        profile = localStorage.getItem("profile");
+    }
+    const p = JSON.parse(profile || "{}");
 
     useEffect(() => {
         // Simulate loading data
-        const timer = setTimeout(() => {
-            setRoadmapData(sampleRoadmap);
+        // const timer = setTimeout(() => {
+        //     setRoadmapData(sampleRoadmap);
+        //     setLoading(false);
+        // }, 500);
+        // return () => clearTimeout(timer);
+        const fetchRoadmap = async () => {
+            setLoading(true);
+            const userRoadmaps = await getUserRoadmapsAPI(p.id);
+            if (userRoadmaps && userRoadmaps.length > 0) {
+                // Assuming you want the first roadmap for display
+                setRoadmapData(userRoadmaps[userRoadmaps.length - 1]);
+                console.log(userRoadmaps);
+            } else {
+                setRoadmapData(null);
+            }
             setLoading(false);
-        }, 500);
-
-        return () => clearTimeout(timer);
+        };
+        fetchRoadmap();
     }, []);
 
     if (loading) {
@@ -159,15 +202,15 @@ export default function Home() {
         <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
             <div className="max-w-5xl mx-auto">
                 <RoadmapHeader
-                    title={roadmapData.roadmap.title}
-                    description={roadmapData.roadmap.description}
-                    domain={roadmapData.roadmap.domain}
-                    estimated_duration={roadmapData.roadmap.estimated_duration}
-                    created_at={roadmapData.roadmap.created_at}
+                    title={roadmapData.title}
+                    description={roadmapData.description}
+                    domain={roadmapData.domain}
+                    estimated_duration={roadmapData.estimated_duration}
+                    created_at={roadmapData.created_at}
                 />
 
                 <div className="space-y-8">
-                    {roadmapData.roadmap.sections
+                    {roadmapData.sections
                         .sort((a, b) => a.order - b.order)
                         .map((section, index) => (
                             <SectionCard key={index} section={section} />

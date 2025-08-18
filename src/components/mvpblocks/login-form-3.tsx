@@ -14,20 +14,53 @@ import {
   Github,
 } from 'lucide-react';
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function SignInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+    const router = useRouter();
+//login fct:
+  async function login(email:string, password:string) {
+    const res = await fetch('http://127.0.0.1:5000/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      // credentials: "include",
+      body: JSON.stringify({ email, password })
+    });
 
-  const handleSubmit = (e: React.FormEvent) => {
+    const {success,error,user,token} = await res.json();
+
+    if (success) {
+      console.log('Logged in, token:', user);
+      localStorage.setItem('token', token);
+      return true;
+    }
+    console.log(error);
+    return false;
+
+  }
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
-      alert('Login successful! (This is a demo)');
-      setLoading(false);
-    }, 2000);
+    try {
+      const res:boolean = await login(email, password);
+      if(!res) {
+        alert('Login failed, please check your credentials.');
+        setLoading(false);
+        return;
+      }
+      setTimeout(() => {
+        alert('Login successful! (This is a demo)');
+        setLoading(false);
+        router.replace('../Dashboard');
+      }, 2000);
+    }catch (e) {
+      console.log('errore happend '.e);
+    }
+
   };
 
   return (

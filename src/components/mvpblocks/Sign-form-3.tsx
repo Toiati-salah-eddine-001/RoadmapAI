@@ -14,6 +14,7 @@ import {
   Github,
 } from 'lucide-react';
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function SignInPage2() {
   const [name, setName] = useState('');
@@ -21,15 +22,46 @@ export default function SignInPage2() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+// logine fct:
+  const router = useRouter();
+  async function signup(email:string, password:string) {
+    const res = await fetch('http://127.0.0.1:5000/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setTimeout(() => {
-      alert('Login successful! (This is a demo)');
-      setLoading(false);
-    }, 2000);
+    const {success,data,error} = await res.json();
+    // localStorage.setItem('token', data.token);
+    if (success) {
+      console.log('Logged in, token:', data);
+        return true;
+    }
+    console.log(error);
+    return false;
+
+  }
+   const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      setLoading(true);
+    try {
+      const issuccess:boolean=await signup(email, password);
+      if (!issuccess) {
+        alert('signup failed. Please check your credentials.');
+        setLoading(false);
+        return;
+      }
+      setTimeout(() => {
+        alert('signup successful! (This is a demo)');
+        setLoading(false);
+        router.push('/Auth/Login');
+      }, 2000);
+    } catch (e) {
+      alert('signup failed. Please check your credentials.'.e);
+    }
+
   };
+
 
   return (
     <div className="relative flex min-h-screen w-full items-center justify-center overflow-hidden p-4">

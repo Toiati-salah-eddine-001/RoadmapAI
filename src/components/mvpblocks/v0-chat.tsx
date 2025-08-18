@@ -15,6 +15,7 @@ import {
   PlusIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {useRouter} from "next/navigation";
 
 interface ActionButtonProps {
   icon: React.ReactNode;
@@ -22,6 +23,7 @@ interface ActionButtonProps {
 }
 
 function ActionButton({ icon, label }: ActionButtonProps) {
+
   return (
     <Button
       type="button"
@@ -46,16 +48,69 @@ export function VercelV0Chat() {
     minHeight: 60,
     maxHeight: 200,
   });
+  const router = useRouter();
+  const [roadmapData, setRoadmapData] = useState(null);
+  // Function to call your /roadmap endpoint
+  async function generateRoadmapAPI(sentence: string, userid: string) {
+    try {
+      const response = await fetch("http://127.0.0.1:5000/roadmap", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ sentence, userid }),
+      });
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      const data = await response.json();
+
+      if (!data.success) {
+        console.error("Error generating roadmap:", data.message);
+        return null;
+      }
+
+      return data.roadmap; // this is your generated roadmap
+    } catch (err) {
+      console.error("Fetch error:", err);
+      return null;
+    }
+  }
+
+  let profile = null;
+  if (typeof window !== 'undefined') {
+    profile = localStorage.getItem("profile");
+  }
+  const p = JSON.parse(profile || "{}");
+
+  const handleKeyDown = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      if (value.trim()) {
-        setValue('');
-        adjustHeight(true);
+      if (!value.trim()) return;
+
+      const roadmap = await generateRoadmapAPI(value, p.id);
+      if (roadmap){
+        setRoadmapData(roadmap);
+        router.replace("./LoadingResult");
       }
+      adjustHeight(true);
+      setValue('');
     }
   };
+
+
+
+  // const profile=localStorage.getItem("profile");
+  // const p =JSON.parse(profile||"{}");
+  // const handleKeyDown = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  //   if (e.key === 'Enter' && !e.shiftKey) {
+  //     e.preventDefault();
+  //     const isroadmap = await roadmap(p.id, value);
+  //     if (value.trim()) {
+  //       // setValue('');
+  //       console.log(value,p.id)
+  //       adjustHeight(true);
+  //     }
+  //   }
+  // };
 
   return (
     <div className="w-full flex flex-col items-center space-y-6 sm:space-y-8">
@@ -64,7 +119,7 @@ export function VercelV0Chat() {
       </h1>
 
       <div className="w-full">
-        <div className="relative rounded-xl border-2 shadow-lg" style={{ 
+        <div className="relative rounded-xl border-2 shadow-lg" style={{
           backgroundColor: '#FFFFFF',
           borderColor: '#B6F500',
           boxShadow: '0 4px 20px rgba(182, 245, 0, 0.15)'
