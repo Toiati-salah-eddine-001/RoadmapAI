@@ -9,58 +9,8 @@ interface UseRoadmapsOptions {
 }
 
 // Mock data for development
-// const mockRoadmaps: Roadmap[] = [
-//     {
-//         id: 1,
-//         title: "Frontend Development Mastery",
-//         description: "Complete journey from HTML basics to advanced React patterns and modern CSS techniques.",
-//         domain: "Frontend",
-//         status: "In Progress",
-//         created_at: "2024-01-15T10:30:00Z",
-//         estimated_duration: "6-8 months",
-//         progress: 45,
-//     },
-//     {
-//         id: 2,
-//         title: "Backend API Development",
-//         description: "Learn to build robust REST APIs and GraphQL services with Node.js and Python.",
-//         domain: "Backend",
-//         status: "Completed",
-//         created_at: "2024-01-10T14:20:00Z",
-//         estimated_duration: "4-6 months",
-//         progress: 100,
-//     },
-//     {
-//         id: 3,
-//         title: "DevOps & Cloud Infrastructure",
-//         description: "Master Docker, Kubernetes, AWS, and CI/CD pipelines for scalable deployments.",
-//         domain: "DevOps",
-//         status: "Draft",
-//         created_at: "2024-01-20T09:15:00Z",
-//         estimated_duration: "5-7 months",
-//         progress: 0,
-//     },
-//     {
-//         id: 4,
-//         title: "Mobile App Development",
-//         description: "Build cross-platform mobile apps with React Native and Flutter.",
-//         domain: "Mobile",
-//         status: "In Progress",
-//         created_at: "2024-01-12T16:45:00Z",
-//         estimated_duration: "3-5 months",
-//         progress: 30,
-//     },
-//     {
-//         id: 5,
-//         title: "Data Science Fundamentals",
-//         description: "Learn Python, machine learning, statistics, and data visualization techniques.",
-//         domain: "Data Science",
-//         status: "Draft",
-//         created_at: "2024-01-18T11:30:00Z",
-//         estimated_duration: "8-12 months",
-//         progress: 0,
-//     },
-// ];
+// Empty array for fallback when no data is available
+const emptyRoadmaps: Roadmap[] = [];
 
 export function useRoadmaps(options: UseRoadmapsOptions = {}) {
     const [allRoadmaps, setAllRoadmaps] = useState<Roadmap[]>([]);
@@ -132,10 +82,10 @@ export function useRoadmaps(options: UseRoadmapsOptions = {}) {
                 console.log("User profile:", profile);
                 
                 if (!profile || !profile.id) {
-                    console.log("No user profile found, using mock data");
-                    // Use mock data if no user profile
-                    setAllRoadmaps(mockRoadmaps);
-                    setRoadmaps(mockRoadmaps);
+                    console.log("No user profile found, using empty data");
+                    // Use empty data if no user profile
+                    setAllRoadmaps(emptyRoadmaps);
+                    setRoadmaps(emptyRoadmaps);
                     setLoading(false);
                     return;
                 }
@@ -147,17 +97,17 @@ export function useRoadmaps(options: UseRoadmapsOptions = {}) {
                     setAllRoadmaps(userRoadmaps);
                     setRoadmaps(userRoadmaps);
                 } else {
-                    console.log("No roadmaps found for user, using mock data");
-                    // Fallback to mock data if no roadmaps found
-                    setAllRoadmaps(mockRoadmaps);
-                    setRoadmaps(mockRoadmaps);
+                    console.log("No roadmaps found for user, using empty data");
+                    // Fallback to empty data if no roadmaps found
+                    setAllRoadmaps(emptyRoadmaps);
+                    setRoadmaps(emptyRoadmaps);
                 }
             } catch (err) {
                 console.error("Error fetching roadmaps:", err);
                 setError(err instanceof Error ? err.message : 'Failed to fetch roadmaps');
-                // Fallback to mock data on error
-                setAllRoadmaps(mockRoadmaps);
-                setRoadmaps(mockRoadmaps);
+                // Fallback to empty data on error
+                setAllRoadmaps(emptyRoadmaps);
+                setRoadmaps(emptyRoadmaps);
             } finally {
                 setLoading(false);
             }
@@ -208,12 +158,32 @@ export function useRoadmaps(options: UseRoadmapsOptions = {}) {
 
     const deleteRoadmap = async (id: number) => {
         try {
-            // Simulate API delay
-            await new Promise(resolve => setTimeout(resolve, 300));
+            console.log("Deleting roadmap with ID:", id);
             
-            setAllRoadmaps(prev => prev.filter(roadmap => roadmap.id !== id));
-            setRoadmaps(prev => prev.filter(roadmap => roadmap.id !== id));
+            const response = await fetch(`http://127.0.0.1:5000/deletuser/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            const result = await response.json();
+            console.log("Delete response:", result);
+
+            if (!response.ok) {
+                throw new Error(result.message || 'Failed to delete roadmap');
+            }
+
+            if (result.success) {
+                // Remove from both states
+                setAllRoadmaps(prev => prev.filter(roadmap => roadmap.id !== id));
+                setRoadmaps(prev => prev.filter(roadmap => roadmap.id !== id));
+                console.log("Roadmap deleted successfully");
+            } else {
+                throw new Error(result.message || 'Failed to delete roadmap');
+            }
         } catch (err) {
+            console.error("Error deleting roadmap:", err);
             setError(err instanceof Error ? err.message : 'Failed to delete roadmap');
         }
     };

@@ -84,6 +84,7 @@ const domainConfig = {
 
 export default function RoadmapCard({ roadmap, onDelete, onDuplicate }: RoadmapCardProps) {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('en-US', {
@@ -102,9 +103,16 @@ export default function RoadmapCard({ roadmap, onDelete, onDuplicate }: RoadmapC
         return statusConfig[normalizedStatus as keyof typeof statusConfig] || statusConfig.Draft;
     };
 
-    const handleDelete = () => {
-        onDelete(roadmap.id);
-        setShowDeleteConfirm(false);
+    const handleDelete = async () => {
+        try {
+            setIsDeleting(true);
+            await onDelete(roadmap.id);
+            setShowDeleteConfirm(false);
+        } catch (error) {
+            console.error("Error in handleDelete:", error);
+        } finally {
+            setIsDeleting(false);
+        }
     };
 
     const handleDuplicate = () => {
@@ -256,7 +264,8 @@ export default function RoadmapCard({ roadmap, onDelete, onDuplicate }: RoadmapC
 
                         <button
                             onClick={() => setShowDeleteConfirm(true)}
-                            className="flex items-center justify-center p-3 rounded-xl font-medium transition-all duration-300 border"
+                            disabled={isDeleting}
+                            className="flex items-center justify-center p-3 rounded-xl font-medium transition-all duration-300 border disabled:opacity-50 disabled:cursor-not-allowed"
                             style={{
                                 backgroundColor: 'rgba(239, 68, 68, 0.1)',
                                 color: '#ef4444',
@@ -264,7 +273,11 @@ export default function RoadmapCard({ roadmap, onDelete, onDuplicate }: RoadmapC
                             }}
                             title="Delete Roadmap"
                         >
-                            <Trash2 className="w-4 h-4" />
+                            {isDeleting ? (
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-500"></div>
+                            ) : (
+                                <Trash2 className="w-4 h-4" />
+                            )}
                         </button>
                     </div>
                 </div>
@@ -325,13 +338,14 @@ export default function RoadmapCard({ roadmap, onDelete, onDuplicate }: RoadmapC
                             </button>
                             <button
                                 onClick={handleDelete}
-                                className="flex-1 px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105"
+                                disabled={isDeleting}
+                                className="flex-1 px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                                 style={{
                                     background: 'linear-gradient(135deg, #ef4444, #dc2626)',
                                     color: 'white',
                                 }}
                             >
-                                Delete Forever
+                                {isDeleting ? 'Deleting...' : 'Delete Forever'}
                             </button>
                         </div>
                     </div>
