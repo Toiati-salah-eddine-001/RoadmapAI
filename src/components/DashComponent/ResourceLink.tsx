@@ -1,13 +1,8 @@
-import { ExternalLink, FileText, Video, BookOpen } from 'lucide-react';
-
-interface Resource {
-    type: 'article' | 'video' | 'course';
-    title: string;
-    url: string;
-}
+import { ExternalLink, FileText, Video, BookOpen, Wrench } from 'lucide-react';
+import { RoadmapResource } from '@/shared/types';
 
 interface ResourceLinkProps {
-    resource: Resource;
+    resource: RoadmapResource;
 }
 
 export default function ResourceLink({ resource }: ResourceLinkProps) {
@@ -19,6 +14,10 @@ export default function ResourceLink({ resource }: ResourceLinkProps) {
                 return <Video className="w-4 h-4" />;
             case 'course':
                 return <BookOpen className="w-4 h-4" />;
+            case 'book':
+                return <BookOpen className="w-4 h-4" />;
+            case 'tool':
+                return <Wrench className="w-4 h-4" />;
             default:
                 return <ExternalLink className="w-4 h-4" />;
         }
@@ -32,6 +31,10 @@ export default function ResourceLink({ resource }: ResourceLinkProps) {
                 return 'bg-red-50 text-red-600 border-red-200';
             case 'course':
                 return 'bg-purple-50 text-purple-600 border-purple-200';
+            case 'book':
+                return 'bg-emerald-50 text-emerald-600 border-emerald-200';
+            case 'tool':
+                return 'bg-amber-50 text-amber-600 border-amber-200';
             default:
                 return 'bg-gray-50 text-gray-600 border-gray-200';
         }

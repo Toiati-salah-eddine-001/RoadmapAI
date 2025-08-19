@@ -1,4 +1,7 @@
-import { Calendar, Home, Inbox, Search, Settings, History, Map } from "lucide-react"
+"use client"
+
+import { useRouter } from "next/navigation"
+import { Calendar, Home, Inbox, Search, Settings, History, Map, LogOut } from "lucide-react"
 
 import {
     Sidebar,
@@ -41,6 +44,16 @@ const items = [
 ]
 
 export function AppSidebar() {
+    const router = useRouter()
+
+    const handleLogout = () => {
+        // 🗑 clear all localStorage (token + user data)
+        localStorage.clear()
+
+        // ✅ redirect to login page (or home)
+        router.push("/Auth/Login")
+    }
+
     return (
         <Sidebar>
             <SidebarContent>
@@ -58,6 +71,19 @@ export function AppSidebar() {
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                             ))}
+
+                            {/* 🚪 Logout button */}
+                            <SidebarMenuItem>
+                                <SidebarMenuButton asChild>
+                                    <button
+                                        onClick={handleLogout}
+                                        className="flex items-center gap-2 w-full text-left"
+                                    >
+                                        <LogOut />
+                                        <span>Logout</span>
+                                    </button>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Eye, Trash2, Calendar, Clock, Play, CheckCircle2, Edit3, Copy } from 'lucide-react';
 import { Roadmap } from '@/shared/types';
-
+import Link from "next/link";
 interface RoadmapCardProps {
     roadmap: Roadmap;
     onDelete: (id: number) => void;
@@ -235,18 +235,19 @@ export default function RoadmapCard({ roadmap, onDelete, onDuplicate }: RoadmapC
 
                     {/* Actions */}
                     <div className="flex items-center gap-3">
-                        <button
-                            className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105"
-                            style={{
-                                background: 'linear-gradient(135deg, var(--color-Primary), var(--color-Secondary))',
-                                color: 'var(--color-Neutral2)',
-                            }}
-                            title="View Roadmap"
-                        >
-                            <Eye className="w-4 h-4" />
-                            <span>Explore</span>
-                        </button>
-
+                        <Link href={`/Dashboard/hestoryPage/${roadmap.id}`}>
+                            <button
+                                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105"
+                                style={{
+                                    background: 'linear-gradient(135deg, var(--color-Primary), var(--color-Secondary))',
+                                    color: 'var(--color-Neutral2)',
+                                }}
+                                title="View Roadmap"
+                            >
+                                <Eye className="w-4 h-4" />
+                                <span>Explore</span>
+                            </button>
+                        </Link>
                         {onDuplicate && (
                             <button
                                 onClick={handleDuplicate}
