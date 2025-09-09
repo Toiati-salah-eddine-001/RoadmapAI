@@ -155,7 +155,7 @@ export default function LoadingPage() {
             {/* Bottom Branding */}
             <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
                 <p className="text-sm font-medium" style={{ color: "var(--color-Neutral3)" }}>
-                    Powered by Creative Design
+                    RODMAPI © 2024 | All rights reserved
                 </p>
             </div>
         </div>

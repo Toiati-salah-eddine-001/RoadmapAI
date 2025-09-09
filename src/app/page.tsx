@@ -107,7 +107,7 @@ export default function LandingPage() {
               <div className="relative">
                 <div className="relative z-10">
                   <Image
-                      src="/ai-learning-roadmap.png"
+                      src="/images/LP.png"
                       alt="AI Learning Roadmap Visualization"
                       width={600}
                       height={600}

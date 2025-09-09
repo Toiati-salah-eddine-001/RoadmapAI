@@ -50,6 +50,8 @@ export function VercelV0Chat() {
   });
   const router = useRouter();
   const [roadmapData, setRoadmapData] = useState(null);
+  // const [isLoading, setIsLoading] = useState(false);
+  const [showInput, setShowInput] = useState(true);
   // Function to call your /roadmap endpoint
   async function generateRoadmapAPI(sentence: string, userid: string) {
     try {
@@ -85,7 +87,8 @@ export function VercelV0Chat() {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       if (!value.trim()) return;
-
+      // setIsLoading(true);
+      setShowInput(false); // Hide input
       const roadmap = await generateRoadmapAPI(value, p.id);
       if (roadmap){
         setRoadmapData(roadmap);
@@ -117,7 +120,14 @@ export function VercelV0Chat() {
       <h1 className="text-center text-3xl font-bold sm:text-5xl" style={{ color: '#000000' }}>
         What can I help you ship?
       </h1>
-
+      {/*{isLoading && (*/}
+      {/*    <div className="w-full flex flex-col items-center mt-4">*/}
+      {/*      <div className="w-2/3 h-3 bg-gray-200 rounded-full overflow-hidden">*/}
+      {/*        <div className="h-full bg-green-400 animate-pulse" style={{ width: '80%' }}></div>*/}
+      {/*      </div>*/}
+      {/*      <span className="mt-2 text-green-700 font-semibold">Crafting your roadmap... 🚀</span>*/}
+      {/*    </div>*/}
+      {/*)}*/}
       <div className="w-full">
         <div className="relative rounded-xl border-2 shadow-lg" style={{
           backgroundColor: '#FFFFFF',
@@ -125,6 +135,7 @@ export function VercelV0Chat() {
           boxShadow: '0 4px 20px rgba(182, 245, 0, 0.15)'
         }}>
           <div className="overflow-y-auto">
+            {showInput ? (
             <Textarea
               ref={textareaRef}
               value={value}
@@ -150,6 +161,12 @@ export function VercelV0Chat() {
                 color: '#000000',
               }}
             />
+            ): (
+                <div className="w-full flex justify-center items-center py-8">
+                  <span className="text-lg font-semibold text-green-700">Please wait...</span>
+                </div>
+               )
+            }
           </div>
 
           <div className="flex items-center justify-between p-3">

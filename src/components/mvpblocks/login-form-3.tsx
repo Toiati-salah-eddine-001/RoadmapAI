@@ -53,7 +53,7 @@ export default function SignInPage() {
         return;
       }
       setTimeout(() => {
-        alert('Login successful! (This is a demo)');
+        // alert('Login successful! (This is a demo)');
         setLoading(false);
         router.replace('../Dashboard');
       }, 2000);
